@@ -1,5 +1,6 @@
 // Initialize variables for dependent packages
 const inquirer = require('inquirer');
+const mysql = require('mysql2');
 
 
 // User Inquirer to prompt user (in terminal via NodeJS) for answers based on questions about subjects in the standard HTML file template.
@@ -23,6 +24,7 @@ const trackEmployees = () => {
         switch (response.startList) {
             case 'View All Employees':
                 console.log(response.startList);
+                viewAllEmployees();
                 break;
             case 'Add Employee':
                 console.log(response.startList);
@@ -46,12 +48,38 @@ const trackEmployees = () => {
                 console.log("Goodbye!");
                 break;                                          
             default:
-            console.log('DEFAULT!');
+                console.log('DEFAULT!');
         };
     });
 };
 
+const viewAllEmployees = () => {
+    const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, manager_id FROM department JOIN role ON department.id = role.department_id JOIN employee ON role.id = employee.role_id;`;
+  
+    // Connect to database
+    const db = mysql.createConnection(
+        {
+          host: 'localhost',
+          user: 'root',
+          password: process.env.MYSQL_PASSWORD,
+          database: 'employees_db'
+        },
+        console.log(`Connected to the employees_db database.`)
+    );    
 
+    console.log("PETER1");
+    db.query(sql, (err, rows) => {
+      if (err) {
+         console.log({ error: err.message });
+         return;
+      }
+      return {
+        message: 'success',
+        data: rows
+      };
+    });    
+    console.log("PETER2");
+}
 
 // Initialize the program and start building your team!
 trackEmployees();

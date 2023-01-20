@@ -4,6 +4,11 @@ FROM department
 JOIN role ON department.id = role.department_id
 JOIN employee ON role.id = employee.role_id;
 
+-- TEST
+SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, manager_id FROM department JOIN role ON department.id = role.department_id JOIN employee ON role.id = employee.role_id;
+-- END TEST
+
+
 -- View All Roles
 SELECT *
 FROM role;
