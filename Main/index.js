@@ -17,8 +17,6 @@ const db = mysql.createConnection(
 // User Inquirer to prompt user (in terminal via NodeJS) for answers based on questions about subjects in the standard HTML file template.
 const trackEmployees = () => {
 
-    console.log("\n- - - - - EMPLOYEE MANAGER - - - - -\n")
-
     inquirer
     .prompt([
       {
@@ -36,7 +34,6 @@ const trackEmployees = () => {
             case 'View All Employees':
                 console.log(response.startList);
                 viewAllEmployees();
-                trackEmployees();
                 break;
             case 'Add Employee':
                 console.log(response.startList);
@@ -48,7 +45,7 @@ const trackEmployees = () => {
                 break;
             case 'View All Roles':
                 console.log(response.startList);
-                trackEmployees();
+                viewAllRoles();
                 break;
             case 'Add Role':
                 console.log(response.startList);
@@ -56,21 +53,24 @@ const trackEmployees = () => {
                 break;
             case 'View All Departments':
                 console.log(response.startList);
-                trackEmployees();
+                viewAllDepartments();
                 break;               
             case 'Add Department':
                 console.log(response.startList);
-                trackEmployees();
-                break;       
+                addDepartment();
+                break;
             case 'Quit':
                 console.log("Goodbye!");
-                break;                                          
+                UI.close();
+                break;
             default:
                 console.log('DEFAULT!');
         };
     });
 };
 
+
+// GET METHODS - START
 const viewAllEmployees = () => {
     const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, manager_id FROM department JOIN role ON department.id = role.department_id JOIN employee ON role.id = employee.role_id;`;
 
@@ -79,11 +79,91 @@ const viewAllEmployees = () => {
             console.log({ error: err.message });
             return;
          } else {
-            console.log(results); // results contains rows returned by server   
+            console.log("\n");
+            console.table(results); // Print the results in the console represented in a nicely formatted table (using npm package "console.table")
+            console.log("\n");
+            trackEmployees();
          }
         }
       );   
 };
+
+const viewAllRoles = () => {
+    const sql = `SELECT * FROM role`;
+
+    db.query(sql, function(err, results) {
+        if (err) {
+            console.log({ error: err.message });
+            return;
+         } else {
+            console.log("\n");
+            console.table(results); // Print the results in the console represented in a nicely formatted table (using npm package "console.table")
+            console.log("\n");
+            trackEmployees();
+         }
+        }
+      );   
+};
+
+const viewAllDepartments = () => {
+    const sql = `SELECT * FROM department`;
+
+    db.query(sql, function(err, result) {
+        if (err) {
+            console.log({ error: err.message });
+            return;
+         } else {
+            console.log("\n");
+            console.table(result); // Print the results in the console represented in a nicely formatted table (using npm package "console.table")
+            console.log("\n");
+            trackEmployees();
+         }
+        }
+      );   
+};
+// GET METHODS - END
+
+// POST METHODS - START
+const addEmployee = () => {
+};
+
+const addDepartment = () => {
+    console.log("\n- - - - - ADD DEPARTMENT - - - - -\n")
+
+    inquirer
+    .prompt([
+      {
+      type: 'input',
+      message: 'Please enter in the name of the department:',
+      name: 'departmentName',
+      },
+    ])
+    // Once user prompts have been completed, ask the user if they're done creating their team, or if they want to add more memebers.
+    .then((response) => {
+        const sql = `INSERT INTO department (name) VALUES (?)`;
+        const params = [response.departmentName];
+      
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log({ error: err.message });
+                return;
+        } else {
+            console.log(`Department ${response.departmentName} added to the database`);
+            // TDB TODO - any extra control flow needed here?
+            trackEmployees();
+        }
+      });
+    });
+};
+
+const addRole = () => {
+};
+// POST METHODS - END
+
+// PUT METHODS - START
+const updateEmployeeRole = () => {
+};
+// PUT METHODS - END
 
 // Initialize the program and start building your team!
 trackEmployees();
