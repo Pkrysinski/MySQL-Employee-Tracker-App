@@ -24,7 +24,7 @@ const trackEmployees = () => {
       message: 'What would you like to do?',
       name: 'startList',
       choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
-      },
+      }
     ])
     // Once user prompts have been completed, ask the user if they're done creating their team, or if they want to add more memebers.
     .then((response) => {
@@ -35,30 +35,30 @@ const trackEmployees = () => {
                 console.log(response.startList);
                 viewAllEmployees();
                 break;
+            case 'View All Roles':
+                console.log(response.startList);
+                viewAllRoles();
+                break;                
+            case 'View All Departments':
+                console.log(response.startList);
+                viewAllDepartments();
+                break;                        
             case 'Add Employee':
                 console.log(response.startList);
                 trackEmployees();
                 break;
-            case 'Update Employee Role':
-                console.log(response.startList);
-                trackEmployees();
-                break;
-            case 'View All Roles':
-                console.log(response.startList);
-                viewAllRoles();
-                break;
             case 'Add Role':
                 console.log(response.startList);
-                trackEmployees();
+                addRole();
                 break;
-            case 'View All Departments':
-                console.log(response.startList);
-                viewAllDepartments();
-                break;               
             case 'Add Department':
                 console.log(response.startList);
                 addDepartment();
-                break;
+                break;                
+            case 'Update Employee Role':
+                console.log(response.startList);
+                trackEmployees();
+                break;                
             case 'Quit':
                 console.log("Goodbye!");
                 UI.close();
@@ -149,7 +149,6 @@ const addDepartment = () => {
                 return;
         } else {
             console.log(`Department ${response.departmentName} added to the database`);
-            // TDB TODO - any extra control flow needed here?
             trackEmployees();
         }
       });
@@ -157,6 +156,46 @@ const addDepartment = () => {
 };
 
 const addRole = () => {
+    console.log("\n- - - - - ADD ROLE - - - - -\n")
+
+    inquirer
+    .prompt([
+    {
+        type: 'input',
+        message: 'Please enter in the title of the role:',
+        name: 'roleName',
+    },
+    {
+        type: 'input',
+        message: 'Please enter in the salary of the role:',
+        name: 'roleSalary',
+    },  
+    {
+        type: 'input',
+        message: 'Please enter in the department ID for the role:',
+        name: 'roleDapartmentID',
+    }
+    ])
+    // Once user prompts have been completed, ask the user if they're done creating their team, or if they want to add more memebers.
+    .then((response) => {
+        const sql = `INSERT INTO role (title, salary, department_id) VALUES (?)`;
+        const params = [response.roleName,parseFloat(response.roleSalary),parseInt(response.roleDapartmentID)];
+
+        //TODO TESTING - start
+        console.log(params);
+        console.log(sql);
+        //TODO TESTING - end
+      
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log({ error: err.message });
+                return;
+        } else {
+            console.log(`Role added to the database`);
+            trackEmployees();
+        }
+      });
+    });    
 };
 // POST METHODS - END
 
