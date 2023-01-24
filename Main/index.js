@@ -163,7 +163,7 @@ const addRole = () => {
     {
         type: 'input',
         message: 'Please enter in the title of the role:',
-        name: 'roleName',
+        name: 'roleTitle',
     },
     {
         type: 'input',
@@ -178,14 +178,9 @@ const addRole = () => {
     ])
     // Once user prompts have been completed, ask the user if they're done creating their team, or if they want to add more memebers.
     .then((response) => {
-        const sql = `INSERT INTO role (title, salary, department_id) VALUES (?)`;
-        const params = [response.roleName,parseFloat(response.roleSalary),parseInt(response.roleDapartmentID)];
+        const sql = `INSERT INTO role (role.title, role.salary, role.department_id) VALUES (?, ?, ?)`;
+        let params = [response.roleTitle,parseFloat(response.roleSalary),parseInt(response.roleDapartmentID)];
 
-        //TODO TESTING - start
-        console.log(params);
-        console.log(sql);
-        //TODO TESTING - end
-      
         db.query(sql, params, (err, result) => {
             if (err) {
                 console.log({ error: err.message });
