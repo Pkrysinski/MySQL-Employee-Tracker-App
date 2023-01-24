@@ -45,7 +45,7 @@ const trackEmployees = () => {
                 break;                        
             case 'Add Employee':
                 console.log(response.startList);
-                trackEmployees();
+                addEmployee();
                 break;
             case 'Add Role':
                 console.log(response.startList);
@@ -57,7 +57,6 @@ const trackEmployees = () => {
                 break;                
             case 'Update Employee Role':
                 console.log(response.startList);
-                trackEmployees();
                 break;                
             case 'Quit':
                 console.log("Goodbye!");
@@ -125,6 +124,46 @@ const viewAllDepartments = () => {
 
 // POST METHODS - START
 const addEmployee = () => {
+    console.log("\n- - - - - ADD EMPLOYEE - - - - -\n")
+
+    inquirer
+    .prompt([
+    {
+        type: 'input',
+        message: 'Please enter in the employee first name:',
+        name: 'employeeFirstName',
+    },
+    {
+        type: 'input',
+        message: 'Please enter in the employee last name:',
+        name: 'employeeLastName',
+    },    
+    {
+        type: 'input',
+        message: 'Please enter in the employee role ID:',
+        name: 'employeeRoleID',
+    },  
+    {
+        type: 'input',
+        message: 'Please enter in the employee manager ID:',
+        name: 'employeeManagerID',
+    }
+    ])
+    // Once user prompts have been completed, ask the user if they're done creating their team, or if they want to add more memebers.
+    .then((response) => {
+        const sql = `INSERT INTO employee (employee.first_name, employee.last_name, employee.role_id, employee.manager_id) VALUES (?, ?, ?, ?)`;
+        let params = [response.employeeFirstName,response.employeeLastName,parseInt(response.employeeRoleID),parseInt(response.employeeManagerID)];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log({ error: err.message });
+                return;
+        } else {
+            console.log(`Employee added to the database`);
+            trackEmployees();
+        }
+      });
+    });    
 };
 
 const addDepartment = () => {
@@ -196,6 +235,9 @@ const addRole = () => {
 
 // PUT METHODS - START
 const updateEmployeeRole = () => {
+    console.log("\n- - - - - UPDATE EMPLOYEE ROLE - - - - -\n")
+
+    trackEmployees();
 };
 // PUT METHODS - END
 
