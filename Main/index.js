@@ -57,6 +57,7 @@ const trackEmployees = () => {
                 break;                
             case 'Update Employee Role':
                 console.log(response.startList);
+                updateEmployeeRole();
                 break;                
             case 'Quit':
                 console.log("Goodbye!");
@@ -237,7 +238,35 @@ const addRole = () => {
 const updateEmployeeRole = () => {
     console.log("\n- - - - - UPDATE EMPLOYEE ROLE - - - - -\n")
 
-    trackEmployees();
+    inquirer
+    .prompt([
+    {
+        type: 'input',
+        message: 'Please enter in the employee ID of the role youd like to change:',
+        name: 'employeeID',
+    },
+    {
+        type: 'input',
+        message: 'Please enter in the employees new role ID:',
+        name: 'roleID',
+    }
+    ])
+    // Once user prompts have been completed, ask the user if they're done creating their team, or if they want to add more memebers.
+    .then((response) => {
+        // const sql = `UPDATE employee (role.title, role.salary, role.department_id) VALUES (?, ?, ?) WHERE employee.id = ?`;
+        const sql = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`;
+        let params = [parseInt(response.roleID),parseInt(response.employeeID)];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log({ error: err.message });
+                return;
+        } else {
+            console.log(`Employee role updated in database!`);
+            trackEmployees();
+        }
+      });
+    });        
 };
 // PUT METHODS - END
 
