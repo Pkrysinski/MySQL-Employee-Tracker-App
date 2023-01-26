@@ -15,6 +15,8 @@ The purpose of this app is to make an employee/team tracking and management appl
 ## Walkthrough Video
 
 Link to walkthrough video...
+https://drive.google.com/file/d/1snA64Qn5b4OT6JS8SS_4YJ-IuJHC8ikk/view
+
 
 ## User Story
 
