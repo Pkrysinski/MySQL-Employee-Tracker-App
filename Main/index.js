@@ -61,8 +61,7 @@ const trackEmployees = () => {
                 break;                
             case 'Quit':
                 console.log("Goodbye!");
-                UI.close();
-                break;
+                return;
             default:
                 console.log('DEFAULT!');
         };
